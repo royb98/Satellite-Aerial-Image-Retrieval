@@ -2,6 +2,8 @@
 
 ***************
 
+Fork that stitches high-res satellite imagery without labels.
+
 ### How to run the code:
 
 Please make sure the following environment is configured:
