@@ -15,13 +15,14 @@ Return an aerial imagery (with maximum resolution available) downloaded from Bin
 import sys, io, os
 from urllib import request
 from PIL import Image
+Image.MAX_IMAGE_PIXELS = None
 import time
 from datetime import timedelta
 
 from tilesystem import TileSystem
 
 
-BASEURL = "http://h0.ortho.tiles.virtualearth.net/tiles/h{0}.jpeg?g=131"
+BASEURL = "http://a0.ortho.tiles.virtualearth.net/tiles/a{0}.png?g=131"
 IMAGEMAXSIZE = 8192 * 8192 * 8 # max width/height in pixels for the retrived image
 TILESIZE = 256              # in Bing tile system, one tile image is in size 256 * 256 pixels
 
@@ -76,7 +77,7 @@ class AerialImageRetrieval(object):
         """
 
         if not os.path.exists('null.png'):
-            nullimg = self.download_image('11111111111111111111')      # an invalid quadkey which will download a null jpeg from Bing tile system
+            nullimg = self.download_image('11111111111111111111')      # an invalid quadkey which will download a null image from Bing tile system
             nullimg.save('./null.png')
         return not (image == Image.open('./null.png'))
 
@@ -153,8 +154,8 @@ class AerialImageRetrieval(object):
             leftup_cornerX, leftup_cornerY = TileSystem.tileXY_to_pixelXY(tileX1, tileY1)
             retrieve_image = result.crop((pixelX1 - leftup_cornerX, pixelY1 - leftup_cornerY, \
                                         pixelX2 - leftup_cornerX, pixelY2 - leftup_cornerY))
-            print("Finish the aerial image retrieval, store the image aerialImage_{0}.jpeg in folder {1}".format(levl, self.tgtfolder))
-            filename = os.path.join(self.tgtfolder, 'aerialImage_{}.jpeg'.format(levl))
+            print("Finish the aerial image retrieval, store the image aerialImage_{0}.png in folder {1}".format(levl, self.tgtfolder))
+            filename = os.path.join(self.tgtfolder, 'aerialImage_{}.png'.format(levl))
             retrieve_image.save(filename)
             return True
         return False    
@@ -214,7 +215,7 @@ def main():
     # Retrieve the aerial image
     imgretrieval = AerialImageRetrieval(lat1, lon1, lat2, lon2)
     if imgretrieval.max_resolution_imagery_retrieval():
-        print("Successfully retrieve the image with maximum resolution!")
+        print("Successfully retrieved the image with maximum resolution!")
     else:
         print("Cannot retrieve the desired image! (Possible reason: expected tile image does not exist.)")
 
